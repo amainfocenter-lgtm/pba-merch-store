@@ -290,8 +290,8 @@ select.fi option{background:#1a2a6c;}
 
 <script>
 var WA='17876309448';
-var SHEET_URL='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec';
-var EMAIL_URL='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec';
+var SHEET_URL='https://script.google.com/macros/s/AKfycbxZGaGShVLAy5soa8nEk1FX7MsXzP7icFCnnZkGv1NtIO_mYuv-3oY8x13PrhbRyo7D/exec';
+var EMAIL_URL='https://script.google.com/macros/s/AKfycbxZGaGShVLAy5soa8nEk1FX7MsXzP7icFCnnZkGv1NtIO_mYuv-3oY8x13PrhbRyo7D/exec';
 var STORE_EMAIL='pba.venta.2026@gmail.com';
 var PL={ath:'ATH Movil',efectivo:'Efectivo',cheque:'Cheque',tarjeta:'Tarjeta Credito/Debito'};
 var GRADES=['Pre-Kinder A','Pre-Kinder B','Pre-Kinder C','Kinder','1ro','2do','3ro','4to','5to','6to','7mo','8vo','9no','10mo','11mo','12mo'];
@@ -625,13 +625,13 @@ function submitOrder(){
     items:items.map(function(i){return i.product+' ['+i.variant+'] Talla '+i.size+': '+i.qty+' x $'+i.price;}).join(' | '),
     total:total, payment:(PL[selPayment]||selPayment), notes:notes, status:'pendiente'
   };
-  if(SHEET_URL && SHEET_URL!=='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec'){
+  if(SHEET_URL && SHEET_URL!=='https://script.google.com/macros/s/AKfycbxZGaGShVLAy5soa8nEk1FX7MsXzP7icFCnnZkGv1NtIO_mYuv-3oY8x13PrhbRyo7D/exec'){
     fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(sheetData)})
       .catch(function(){});
   }
 
   // Send receipt email via Apps Script
-  if(EMAIL_URL && EMAIL_URL!=='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec'){
+  if(EMAIL_URL && EMAIL_URL!=='https://script.google.com/macros/s/AKfycbxZGaGShVLAy5soa8nEk1FX7MsXzP7icFCnnZkGv1NtIO_mYuv-3oY8x13PrhbRyo7D/exec'){
     var emailData={
       to:buyer.email, buyerName:buyer.name,
       orderNum:oNum, date:date, phone:buyer.phone,
