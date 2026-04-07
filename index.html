@@ -157,8 +157,8 @@ select.fi option{background:#1a2a6c;}
     </div>
     <br>
     <div class="wa-notice">
-      <strong>&#128241; Recibiras tu recibo por WhatsApp y Email</strong>
-      Asegurate de escribir tu numero de WhatsApp correctamente
+      <strong>&#128241; Tu pedido llegara a la tienda por WhatsApp</strong>
+      Recibirás confirmación por email al finalizar
     </div>
     <button class="btn bp bbig" onclick="go(2)">Continuar</button>
   </div>
@@ -235,13 +235,12 @@ select.fi option{background:#1a2a6c;}
     <div style="font-size:.82rem;color:rgba(255,255,255,.5);margin-top:4px" id="ordNum"></div>
   </div>
   <div class="wa-notice" style="margin-bottom:14px">
-    <strong>&#128241; Se abrira WhatsApp 2 veces</strong>
-    Primera vez: notificacion a la tienda. Segunda vez (1.5 seg despues): tu recibo personal.
-    <br>Presiona ENVIAR en ambas para completar el proceso.
+    <strong>&#128241; Pedido enviado por WhatsApp a la tienda</strong>
+    Presiona ENVIAR en WhatsApp para completar el proceso.
   </div>
   <div class="inv" id="invArea"></div>
   <div style="display:flex;flex-wrap:wrap;gap:11px;justify-content:center">
-    <button class="btn bp" onclick="printInv()">&#128438; Imprimir / PDF</button>
+    <button class="btn bp" onclick="printInv()">&#128229; Descargar Factura</button>
     <button class="btn bs" onclick="newOrder()">&#128260; Nuevo Pedido</button>
     <button class="btn bs" onclick="go(6)">&#128202; Ver Pedidos</button>
   </div>
@@ -291,8 +290,8 @@ select.fi option{background:#1a2a6c;}
 
 <script>
 var WA='17876309448';
-var SHEET_URL='YOUR_APPS_SCRIPT_URL';
-var EMAIL_URL='YOUR_EMAIL_SCRIPT_URL';
+var SHEET_URL='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec';
+var EMAIL_URL='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec';
 var STORE_EMAIL='pba.venta.2026@gmail.com';
 var PL={ath:'ATH Movil',efectivo:'Efectivo',cheque:'Cheque',tarjeta:'Tarjeta Credito/Debito'};
 var GRADES=['Pre-Kinder A','Pre-Kinder B','Pre-Kinder C','Kinder','1ro','2do','3ro','4to','5to','6to','7mo','8vo','9no','10mo','11mo','12mo'];
@@ -626,13 +625,13 @@ function submitOrder(){
     items:items.map(function(i){return i.product+' ['+i.variant+'] Talla '+i.size+': '+i.qty+' x $'+i.price;}).join(' | '),
     total:total, payment:(PL[selPayment]||selPayment), notes:notes, status:'pendiente'
   };
-  if(SHEET_URL && SHEET_URL!=='YOUR_APPS_SCRIPT_URL'){
+  if(SHEET_URL && SHEET_URL!=='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec'){
     fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(sheetData)})
       .catch(function(){});
   }
 
   // Send receipt email via Apps Script
-  if(EMAIL_URL && EMAIL_URL!=='YOUR_EMAIL_SCRIPT_URL'){
+  if(EMAIL_URL && EMAIL_URL!=='https://script.google.com/macros/s/AKfycbwDy239wx-6yFXUZx0O5ynPjN9ePpX7crBgO6iNtGO1QjYmOoxAa5PiA2aPBXh1ZrWH/exec'){
     var emailData={
       to:buyer.email, buyerName:buyer.name,
       orderNum:oNum, date:date, phone:buyer.phone,
@@ -668,36 +667,7 @@ function submitOrder(){
   var sellerUrl='https://wa.me/'+WA+'?text='+encodeURIComponent(sellerMsg.join('\n'));
   window.open(sellerUrl,'_blank');
 
-  // --- WhatsApp al COMPRADOR (después de 1.5 segundos) ---
-  var buyerPhone=buyer.phone.replace(/\D/g,'');
-  if(buyerPhone.length===10) buyerPhone='1'+buyerPhone;
-  if(buyerPhone.length===11 && buyerPhone[0]==='7') buyerPhone='1'+buyerPhone;
-  
-  var buyerMsg=[
-    '🦉 *Confirmación de Orden PBA Merch*',
-    '━━━━━━━━━━━━━━━━━━━━',
-    '✅ *Tu pedido fue recibido!*',
-    '',
-    '📋 *Orden:* '+oNum,
-    '👤 *Nombre:* '+buyer.name,
-    '🎓 *Estudiantes:* '+stuTxt,
-    '',
-    '🛍️ *ARTÍCULOS:*',
-    itemsTxt,
-    '',
-    '💰 *TOTAL: $'+total.toFixed(2)+'*',
-    '💳 *Pago:* '+(PL[selPayment]||selPayment),
-    '',
-    '📞 Preguntas: 787-630-9448',
-    '✉️ pba.venta.2026@gmail.com',
-    '🦉 Piaget Bilingual Academy'
-  ];
-  if(notes) buyerMsg.splice(buyerMsg.length-3,0,'📝 *Notas:* '+notes);
 
-  setTimeout(function(){
-    var buyerUrl='https://wa.me/'+buyerPhone+'?text='+encodeURIComponent(buyerMsg.join('\n'));
-    window.open(buyerUrl,'_blank');
-  },1500);
   btn.disabled=false; btn.textContent='CONFIRMAR PEDIDO';
   toast('Pedido '+oNum+' confirmado!');
   go(5);
@@ -871,22 +841,24 @@ function expTxt(){
 }
 
 
-function printHTML(html){
-  var iframe=document.createElement('iframe');
-  iframe.style.cssText='position:fixed;top:-9999px;left:-9999px;width:800px;height:600px;border:none;';
-  document.body.appendChild(iframe);
-  var doc=iframe.contentDocument||iframe.contentWindow.document;
-  doc.open();
-  doc.write('<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    +'<style>body{font-family:Arial,sans-serif;padding:28px;max-width:660px;margin:auto;color:#111}'
-    +'@media print{@page{margin:12mm}}</style>'
-    +'</head><body>'+html+'</body></html>');
-  doc.close();
-  iframe.onload=function(){
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    setTimeout(function(){document.body.removeChild(iframe);},1000);
-  };
+function printHTML(content){
+  var style='<style>'
+    +'body{font-family:Arial,sans-serif;padding:24px;max-width:640px;margin:auto;color:#111}'
+    +'table{width:100%;border-collapse:collapse;margin-bottom:16px}'
+    +'th{background:#1a2a6c;color:#fff;padding:8px 11px;text-align:left;font-size:12px}'
+    +'td{padding:8px 11px;border-bottom:1px solid #eee;font-size:13px}'
+    +'</style>';
+  var full='<!DOCTYPE html><html><head><meta charset="UTF-8">'+style+'</head><body>'+content+'</body></html>';
+  var blob=new Blob([full],{type:'text/html;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='Factura_PBA_'+new Date().getTime()+'.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  toast('Factura descargada. Abrela y usa Imprimir o Compartir para PDF.');
 }
 
 function openImg(src){document.getElementById('mImgEl').src=src;document.getElementById('imgMod').classList.add('on');}
